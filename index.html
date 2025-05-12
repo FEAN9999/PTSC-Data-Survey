@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khảo Sát Nhu Cầu Dữ Liệu PTSC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #2563eb;
+        }
+        .form-group textarea {
+            resize: vertical;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #374151;
+            font-weight: normal;
+        }
+        .checkbox-group input[type="checkbox"], .checkbox-group input[type="radio"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #2563eb;
+        }
+        .submit-btn {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .submit-btn:hover:not(:disabled) {
+            background-color: #1d4ed8;
+        }
+        .submit-btn:disabled {
+            background-color: #93c5fd;
+            cursor: not-allowed;
+        }
+        .spinner {
+            display: none;
+            border: 2px solid #ffffff;
+            border-top: 2px solid #2563eb;
+            border-radius: 50%;
+            width: 1.25rem;
+            height: 1.25rem;
+            animation: spin 1s linear infinite;
+        }
+        .submit-btn.loading .spinner {
+            display: inline-block;
+        }
+        .submit-btn.loading span {
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container bg-white shadow-lg rounded-lg p-8">
+        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">BẢNG KHẢO SÁT NHU CẦU DỮ LIỆU</h1>
+        <form id="surveyForm" name="submit-to-google-sheet">
+            <!-- Phần 1: Thông tin người tham gia -->
+            <div class="section-title">Phần 1: Thông tin người tham gia</div>
+            <div class="form-group">
+                <label for="fullName">1. Họ và tên</label>
+                <input type="text" id="fullName" name="FullName" required>
+            </div>
+            <div class="form-group">
+                <label for="department">2. Phòng ban/Đơn vị</label>
+                <select id="department" name="Department" required>
+                    <option value="">Chọn phòng ban</option>
+                    <option value="Ban Quản lý Dự án">Ban Quản lý Dự án</option>
+                    <option value="Ban Kỹ thuật Dầu khí">Ban Kỹ thuật Dầu khí</option>
+                    <option value="Ban Khảo sát Địa chấn">Ban Khảo sát Địa chấn</option>
+                    <option value="Ban Vận hành và Bảo dưỡng">Ban Vận hành và Bảo dưỡng</option>
+                    <option value="Ban Năng lượng Tái tạo">Ban Năng lượng Tái tạo</option>
+                    <option value="Khác">Khác</option>
+                </select>
+                <input type="text" id="otherDepartment" name="OtherDepartment" placeholder="Vui lòng ghi rõ" class="mt-2 hidden">
+            </div>
+            <div class="form-group">
+                <label for="position">3. Chức vụ</label>
+                <input type="text" id="position" name="Position" required>
+            </div>
+            <div class="form-group">
+                <label for="email">4. Email liên hệ</label>
+                <input type="email" id="email" name="Email" required>
+            </div>
+
+            <!-- Phần 2: Nhu cầu dữ liệu -->
+            <div class="section-title">Phần 2: Nhu cầu dữ liệu</div>
+            <div class="form-group">
+                <label>5. Loại dữ liệu bạn cần sử dụng (có thể chọn nhiều)</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="DataType" value="Dữ liệu khảo sát địa chấn"> Dữ liệu khảo sát địa chấn (2D, 3D, 4C)</label>
+                    <label><input type="checkbox" name="DataType" value="Dữ liệu địa vật lý và địa chất công trình"> Dữ liệu địa vật lý và địa chất công trình</label>
+                    <label><input type="checkbox" name="DataType" value="Dữ liệu vận hành và bảo dưỡng công trình biển"> Dữ liệu vận hành và bảo dưỡng công trình biển (O&M)</label>
+                    <label><input type="checkbox" name="DataType" value="Dữ liệu tàu dịch vụ"> Dữ liệu tàu dịch vụ (vị trí, lịch trình, trạng thái)</label>
+                    <label><input type="checkbox" name="DataType" value="Dữ liệu kho nổi FSO/FPSO"> Dữ liệu kho nổi FSO/FPSO (lưu trữ, xử lý, xuất dầu)</label>
+                    <label><input type="checkbox" name="DataType" value="Dữ liệu cảng và logistics"> Dữ liệu cảng và logistics (kho bãi, vận chuyển)</label>
+                    <label><input type="checkbox" name="DataType" value="Dữ liệu năng lượng tái tạo"> Dữ liệu năng lượng tái tạo (điện gió ngoài khơi, năng lượng mặt trời)</label>
+                    <label><input type="checkbox" name="DataType" value="Dữ liệu tài chính và hiệu suất dự án"> Dữ liệu tài chính và hiệu suất dự án</label>
+                    <label><input type="checkbox" name="DataType" value="Khác"> Khác</label>
+                    <input type="text" id="otherDataType" name="OtherDataType" placeholder="Vui lòng ghi rõ" class="mt-2 hidden">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>6. Mục đích sử dụng dữ liệu</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="Purpose" value="Hỗ trợ quản lý và vận hành dự án"> Hỗ trợ quản lý và vận hành dự án</label>
+                    <label><input type="checkbox" name="Purpose" value="Phân tích và lập báo cáo"> Phân tích và lập báo cáo</label>
+                    <label><input type="checkbox" name="Purpose" value="Ra quyết định chiến lược"> Ra quyết định chiến lược</label>
+                    <label><input type="checkbox" name="Purpose" value="Hỗ trợ khảo sát và nghiên cứu"> Hỗ trợ khảo sát và nghiên cứu</label>
+                    <label><input type="checkbox" name="Purpose" value="Khác"> Khác</label>
+                    <input type="text" id="otherPurpose" name="OtherPurpose" placeholder="Vui lòng ghi rõ" class="mt-2 hidden">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>7. Tần suất sử dụng dữ liệu</label>
+                <div class="checkbox-group">
+                    <label><input type="radio" name="Frequency" value="Hàng ngày" required> Hàng ngày</label>
+                    <label><input type="radio" name="Frequency" value="Hàng tuần"> Hàng tuần</label>
+                    <label><input type="radio" name="Frequency" value="Hàng tháng"> Hàng tháng</label>
+                    <label><input type="radio" name="Frequency" value="Theo dự án cụ thể"> Theo dự án cụ thể</label>
+                    <label><input type="radio" name="Frequency" value="Khác"> Khác</label>
+                    <input type="text" id="otherFrequency" name="OtherFrequency" placeholder="Vui lòng ghi rõ" class="mt-2 hidden">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>8. Định dạng dữ liệu mong muốn</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="Format" value="Excel/CSV"> Excel/CSV</label>
+                    <label><input type="checkbox" name="Format" value="JSON/XML"> JSON/XML</label>
+                    <label><input type="checkbox" name="Format" value="Database (SQL, NoSQL)"> Database (SQL, NoSQL)</label>
+                    <label><input type="checkbox" name="Format" value="Báo cáo PDF/Word"> Báo cáo PDF/Word</label>
+                    <label><input type="checkbox" name="Format" value="Dashboard trực quan"> Dashboard trực quan (Power BI, Tableau, v.v.)</label>
+                    <label><input type="checkbox" name="Format" value="Khác"> Khác</label>
+                    <input type="text" id="otherFormat" name="OtherFormat" placeholder="Vui lòng ghi rõ" class="mt-2 hidden">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>9. Yêu cầu về thời gian thực</label>
+                <div class="checkbox-group">
+                    <label><input type="radio" name="Realtime" value="Cần dữ liệu thời gian thực" required> Cần dữ liệu thời gian thực</label>
+                    <label><input type="radio" name="Realtime" value="Không cần, dữ liệu lịch sử là đủ"> Không cần, dữ liệu lịch sử là đủ</label>
+                    <label><input type="radio" name="Realtime" value="Kết hợp cả hai"> Kết hợp cả hai</label>
+                </div>
+            </div>
+
+            <!-- Phần 3: Yêu cầu kỹ thuật và hỗ trợ -->
+            <div class="section-title">Phần 3: Yêu cầu kỹ thuật và hỗ trợ</div>
+            <div class="form-group">
+                <label>10. Nguồn cung cấp dữ liệu hiện tại</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="DataSource" value="Nội bộ PTSC"> Nội bộ PTSC</label>
+                    <label><input type="checkbox" name="DataSource" value="Đối tác bên ngoài"> Đối tác bên ngoài (nhà thầu, khách hàng)</label>
+                    <label><input type="checkbox" name="DataSource" value="Không có nguồn dữ liệu cụ thể"> Không có nguồn dữ liệu cụ thể</label>
+                    <label><input type="checkbox" name="DataSource" value="Khác"> Khác</label>
+                    <input type="text" id="otherDataSource" name="OtherDataSource" placeholder="Vui lòng ghi rõ" class="mt-2 hidden">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tools">11. Các công cụ/hệ thống hiện đang sử dụng để xử lý dữ liệu</label>
+                <textarea id="tools" name="Tools" rows="4" placeholder="Ví dụ: ERP, CRM, phần mềm khảo sát địa chấn, v.v."></textarea>
+            </div>
+            <div class="form-group">
+                <label>12. Khó khăn hiện tại trong việc truy cập/sử dụng dữ liệu</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="Challenges" value="Thiếu dữ liệu cần thiết"> Thiếu dữ liệu cần thiết</label>
+                    <label><input type="checkbox" name="Challenges" value="Dữ liệu không đồng bộ"> Dữ liệu không đồng bộ</label>
+                    <label><input type="checkbox" name="Challenges" value="Thời gian truy cập lâu"> Thời gian truy cập lâu</label>
+                    <label><input type="checkbox" name="Challenges" value="Định dạng không phù hợp"> Định dạng không phù hợp</label>
+                    <label><input type="checkbox" name="Challenges" value="Khác"> Khác</label>
+                    <input type="text" id="otherChallenges" name="OtherChallenges" placeholder="Vui lòng ghi rõ" class="mt-2 hidden">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>13. Yêu cầu bổ sung về hệ thống quản lý dữ liệu</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="Requirements" value="Tích hợp API để truy xuất dữ liệu tự động"> Tích hợp API để truy xuất dữ liệu tự động</label>
+                    <label><input type="checkbox" name="Requirements" value="Hệ thống lưu trữ đám mây"> Hệ thống lưu trữ đám mây (cloud storage)</label>
+                    <label><input type="checkbox" name="Requirements" value="Bảo mật dữ liệu nâng cao"> Bảo mật dữ liệu nâng cao</label>
+                    <label><input type="checkbox" name="Requirements" value="Giao diện người dùng thân thiện"> Giao diện người dùng thân thiện</label>
+                    <label><input type="checkbox" name="Requirements" value="Khác"> Khác</label>
+                    <input type="text" id="otherRequirements" name="OtherRequirements" placeholder="Vui lòng ghi rõ" class="mt-2 hidden">
+                </div>
+            </div>
+
+            <!-- Phần 4: Ý kiến đóng góp -->
+            <div class="section-title">Phần 4: Ý kiến đóng góp</div>
+            <div class="form-group">
+                <label for="feedback">14. Ý kiến hoặc đề xuất để cải thiện quản lý và cung cấp dữ liệu tại PTSC</label>
+                <textarea id="feedback" name="Feedback" rows="6"></textarea>
+            </div>
+
+            <!-- Gửi biểu mẫu -->
+            <div class="text-center">
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span>Gửi khảo sát</span>
+                    <div class="spinner"></div>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Thay thế bằng Web App URL của bạn
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyjf60LvbBsxkWHuenpEzga0vngTAjFdEbvXsCsHmaaEJ5q78vqxUPbo3oChSQ9QQ2B/exec'; // Ví dụ: https://script.google.com/macros/s/XXX/exec
+
+        // Hiển thị trường nhập liệu "Khác" khi chọn tùy chọn "Khác"
+        document.querySelectorAll('input[value="Khác"]').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const fieldName = e.target.name.replace('[]', '');
+                const otherField = document.getElementById(`other${fieldName}`);
+                if (e.target.checked || e.target.value === 'Khác') {
+                    otherField.classList.remove('hidden');
+                } else {
+                    otherField.classList.add('hidden');
+                }
+            });
+        });
+
+        // Xử lý gửi biểu mẫu
+        const form = document.forms['submit-to-google-sheet'];
+        const submitBtn = document.getElementById('submitBtn');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            // Hiển thị trạng thái loading
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+
+            // Thu thập dữ liệu checkbox
+            const checkboxes = ['DataType', 'Purpose', 'Format', 'DataSource', 'Challenges', 'Requirements'];
+            checkboxes.forEach(field => {
+                const checked = Array.from(document.querySelectorAll(`input[name="${field}"]:checked`))
+                    .map(input => input.value);
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = field;
+                hiddenInput.value = checked.join(',');
+                form.appendChild(hiddenInput);
+            });
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        alert('Cảm ơn bạn đã hoàn thành khảo sát! Dữ liệu đã được gửi.');
+                        form.reset();
+                        document.querySelectorAll('.hidden').forEach(field => field.classList.add('hidden'));
+                        // Xóa các hidden inputs tạm thời
+                        checkboxes.forEach(field => {
+                            const hiddenInput = form.querySelector(`input[name="${field}"][type="hidden"]`);
+                            if (hiddenInput) hiddenInput.remove();
+                        });
+                    } else {
+                        alert('Có lỗi xảy ra: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                })
+                .finally(() => {
+                    // Tắt trạng thái loading
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('loading');
+                });
+        });
+    </script>
+</body>
+</html>
